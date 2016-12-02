@@ -49,6 +49,17 @@ namespace OpenHashing
 			CreateHashTable(Int32.Parse(textBox1.Text));
 		}
 
-		private void CreateHashTable(int num);
+		private void CreateHashTable(int num)
+		{
+			int sizeOfTable = num / 3;  //задаём размер таблицы: примерно треть от исходного числа элементов
+
+			int i = 0;
+			Random elements = new Random();
+			while (i < num)
+			{
+				int elem = elements.Next(0, 1000);
+			}
+		}
+		
 	}
 }
