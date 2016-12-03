@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +13,11 @@ namespace OpenHashing
 {
 	public partial class Form1 : Form
 	{
-		public Form1()
+        int sizeOfTable = 0;
+        List<List<int>> table;
+
+
+        public Form1()
 		{
 			InitializeComponent();
 		}
@@ -22,7 +27,7 @@ namespace OpenHashing
 			if (!textBox1.Text.Equals(""))
 			{
 				buttonForHashTable.Enabled = true;
-			}
+            }
 			else
 			{
 				buttonForHashTable.Enabled = false;
@@ -33,7 +38,7 @@ namespace OpenHashing
 				label2.Enabled = false;
 				label3.Enabled = false;
 				label4.Enabled = false;
-			}
+            }
 		}
 
 		private void buttonForHashTable_Click(object sender, EventArgs e)
@@ -45,22 +50,50 @@ namespace OpenHashing
 			label2.Enabled = true;
 			label3.Enabled = true;
 			label4.Enabled = true;
+            labelOk.Visible = false;
 
-			CreateHashTable(Int32.Parse(textBox1.Text));
+            CreateHashTable(Int32.Parse(textBox1.Text));
 		}
 
 		private void CreateHashTable(int num)
 		{
-			int sizeOfTable = num / 3;  //задаём размер таблицы: примерно треть от исходного числа элементов
+		    sizeOfTable = num / 3;  //задаём размер таблицы: примерно треть от исходного числа элементов
+            table = new List<List<int>>();
 
-			int i = 0;
-			Random elements = new Random();
-			while (i < num)
+            for(int j = 0; j < sizeOfTable; j++)
+            {
+                table.Add(new List<int>());
+            }
+
+
+            Random elements = new Random();
+            int elem, rest;
+            for (int i = 0; i < num; i++)
 			{
-				int elem = elements.Next(0, 1000);
-
+                elem = elements.Next(0, 1000);
+                rest = elem % sizeOfTable;
+                table[rest].Add(elem);
 			}
 		}
-		
-	}
+
+        private void buttonForOut_Click(object sender, EventArgs e)
+        {
+            using (StreamWriter hashTable = new StreamWriter("hashTable.txt", false))
+            {
+                if (sizeOfTable == 0)
+                    hashTable.Write("Элемента не заданы - таблица пустая");
+                else
+                    for (int i = 0; i < sizeOfTable; i++)
+                    {
+                        hashTable.Write(i + "\t");
+                        foreach(int a in table[i])
+                        {
+                            hashTable.Write(" -> " + a);
+                        }
+                        hashTable.WriteLine();
+                    }
+            }
+            labelOk.Visible = true;
+        }
+    }
 }
