@@ -6,7 +6,6 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace OpenHashing
@@ -122,13 +121,13 @@ namespace OpenHashing
 
             table[rest].Add(newElement);
             InsertOK.Visible = true;
+			outHashTable();
+
         }
 
         /// <summary>
         /// Удаление элемента
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void buttonForDelete_Click(object sender, EventArgs e)
         {
             int delElem = Int32.Parse(textBoxForDelitingElement.Text);
@@ -140,41 +139,25 @@ namespace OpenHashing
             }
             else
                 DeleteFailed.Visible = true;
+			outHashTable();
+
         }
 
         /// <summary>
         /// Вывод хэш-таблицы в файл
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void buttonForOut_Click(object sender, EventArgs e)
         {
-            using (StreamWriter hashTable = new StreamWriter("hashTable.txt", false))
-            {
-                if (sizeOfTable == 0)
-                    hashTable.Write("Элемента не заданы - таблица пустая");
-                else
-                    for (int i = 0; i < sizeOfTable; i++)
-                    {
-                        hashTable.Write(i + "\t");
-                        foreach(int a in table[i])
-                        {
-                            hashTable.Write(" -> " + a);
-                        }
-                        hashTable.WriteLine();
-                    }
-            }
+			outHashTable();
             OutOk.Visible = true;
         }
 
         /// <summary>
         /// Поиск элемента
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void buttonForSearch_Click(object sender, EventArgs e)
         {
-            int elem = Int32.Parse(textBoxForInsertingElement.Text);
+            int elem = Int32.Parse(textBoxForSearchingElement.Text);
             int rest = elem % sizeOfTable;
             int result = findElement(table[rest], elem);
             if (result != -1)
@@ -190,10 +173,34 @@ namespace OpenHashing
             }
         }
 
-
+		/// <summary>
+		/// Вспомогательная функция для поиска
+		/// </summary>
         private int findElement(List<int> list, int el)
         {
             return list.IndexOf(el);
         }
+
+		/// <summary>
+		/// Функция для вывода хэш-таблицы в файл
+		/// </summary>
+		private void outHashTable()
+		{
+			using (StreamWriter hashTable = new StreamWriter("hashTable.txt", false))
+			{
+				if (sizeOfTable == 0)
+					hashTable.Write("Элемента не заданы - таблица пустая");
+				else
+					for (int i = 0; i < sizeOfTable; i++)
+					{
+						hashTable.Write(i + "\t");
+						foreach (int a in table[i])
+						{
+							hashTable.Write(" -> " + a);
+						}
+						hashTable.WriteLine();
+					}
+			}
+		}
     }
 }
